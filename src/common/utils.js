@@ -23,6 +23,20 @@ const responseSuccess = (ctx, msg = '', data = {}, code = 200) => {
   }
 }
 
+// 分页类接口的响应
+const responsePage = (ctx, msg = '', data = [], pageNum, pageSize, total, code = 200) => {
+  ctx.body = {
+    code,
+    data: {
+      records: data,
+      pageSize,
+      pageNum,
+      total
+    },
+    msg
+  }
+}
+
 // 失败响应
 const responseFail = (ctx, msg = '', data = {}, code = 500) => {
   ctx.status = code
@@ -33,8 +47,35 @@ const responseFail = (ctx, msg = '', data = {}, code = 500) => {
   }
 }
 
+// 分页参数处理
+const pager = (pageNum, pageSize) => {
+  pageNum *= 1
+  pageSize *= 1
+  const skipIndex = (pageNum - 1) * pageSize
+  return {
+    pageNum,
+    pageSize,
+    skipIndex
+  }
+}
+/**
+ * 检查是否为空
+ * @param {String} value
+ * @returns 空返回true否则返回false
+ */
+const checkTrim = (value) => {
+  if (value === '' || value === undefined || value == null) {
+    return true
+  } else {
+    return false
+  }
+}
+
 export {
   checkCaptcha,
   responseSuccess,
-  responseFail
+  responseFail,
+  pager,
+  checkTrim,
+  responsePage
 }

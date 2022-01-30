@@ -25,7 +25,7 @@ const middleWare = compose([
   koaCors(),
   helmet(),
   koaJson({ pretty: false, param: 'pretty' }),
-  statics(path.join(__dirname, './public')),
+  statics(path.join(__dirname, '../public')),
   errorHandler,
   koaJwt
 ])

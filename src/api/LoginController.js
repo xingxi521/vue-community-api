@@ -1,5 +1,5 @@
 import sendEmail from '../config/MailerConfig'
-import moment from 'moment'
+import moment from 'dayjs'
 import jwt from 'jsonwebtoken'
 import config from '../config/index'
 import Users from '../model/User'

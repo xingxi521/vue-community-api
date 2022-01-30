@@ -2,6 +2,8 @@
 import Router from 'koa-router'
 const router = new Router()
 import PublicController from '../api/PublicController'
+import ContentController from '../api/ContentController'
 router.prefix('/public')
 router.post('/getCaptcha', PublicController.getCaptcha)
+router.post('/list', ContentController.getContentList)
 export default router
