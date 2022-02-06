@@ -1,4 +1,4 @@
-// 公共路由管理
+// 公共路由管理-不校验token
 import Router from 'koa-router'
 const router = new Router()
 import PublicController from '../api/PublicController'

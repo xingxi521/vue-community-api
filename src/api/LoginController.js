@@ -35,7 +35,15 @@ class LoginController {
           const token = jwt.sign({ userName: query.userName }, config.JWT_SECRET, {
             expiresIn: '1h'
           })
-          responseSuccess(ctx, '登录成功', token)
+          const userInfo = query.toJSON()
+          const filterFiled = ['userName', 'passWord']
+          filterFiled.forEach(item => {
+            delete userInfo[item]
+          })
+          responseSuccess(ctx, '登录成功', {
+            token,
+            userInfo
+          })
         } else {
           responseFail(ctx, '账号或密码错误，请重新输入！')
         }
