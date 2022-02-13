@@ -62,11 +62,11 @@ const Users = mongoose.Schema({
 })
 // 前置钩子设置创建时间和更新时间
 Users.pre('save', function(next) {
-  this.createTime = dayjs().format('yyyy-MM-DD HH:mm:ss')
+  this.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
   next()
 })
 Users.pre('update', function(next) {
-  this.updateTime = dayjs().format('yyyy-MM-DD HH:mm:ss')
+  this.updateTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
   next()
 })
 // 校验重复键问题

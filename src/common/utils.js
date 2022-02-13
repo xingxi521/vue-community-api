@@ -1,5 +1,6 @@
 import { getValue } from '../config/RedisConfig'
-
+import jsonwebtoken from 'jsonwebtoken'
+import config from '../config/index'
 // 校验验证码
 const checkCaptcha = async (uid, captcha) => {
   const redisCaptcha = await getValue(uid)
@@ -70,12 +71,21 @@ const checkTrim = (value) => {
     return false
   }
 }
-
+/**
+ * 解密token取出token数据
+ * @param {String} token
+ * @returns
+ */
+const getTokenInfo = (ctx) => {
+  const token = ctx.headers.authorization.substr(7)
+  return jsonwebtoken.verify(token, config.JWT_SECRET)
+}
 export {
   checkCaptcha,
   responseSuccess,
   responseFail,
   pager,
   checkTrim,
-  responsePage
+  responsePage,
+  getTokenInfo
 }

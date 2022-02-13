@@ -32,8 +32,8 @@ class LoginController {
       if (checkPassCaptcha) {
         const query = await Users.findOne({ userName })
         if (query && query.passWord === passWord) {
-          const token = jwt.sign({ userName: query.userName }, config.JWT_SECRET, {
-            expiresIn: '1h'
+          const token = jwt.sign({ userId: query._id }, config.JWT_SECRET, {
+            expiresIn: '1d'
           })
           const userInfo = query.toJSON()
           const filterFiled = ['userName', 'passWord']

@@ -18,7 +18,7 @@ const Post = mongoose.Schema({
 })
 // 前置钩子处理创建时间
 Post.pre('save', function(next) {
-  this.createTime = dayjs.format('yyyy-MM-DD HH:mm:ss')
+  this.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
   next()
 })
 Post.statics = {

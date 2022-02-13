@@ -10,7 +10,7 @@ const Link = mongoose.Schema({
 })
 // 前置钩子处理创建时间
 Link.pre('save', function(next) {
-  this.createTime = dayjs.format('yyyy-MM-DD HH:mm:ss')
+  this.createTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
   next()
 })
 Link.statics = {
