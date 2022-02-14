@@ -13,8 +13,8 @@ async function sendEmail(sendInfo) {
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
-        user: '404133428@qq.com', // generated ethereal user
-        pass: 'hruodejrhrimbhfb', // generated ethereal password
+        user: '', // generated ethereal user
+        pass: '', // generated ethereal password
       },
     });
 
