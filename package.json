@@ -28,10 +28,12 @@
     "koa-jwt": "^4.0.3",
     "koa-router": "^10.1.1",
     "koa-static": "^5.0.0",
+    "make-dir": "^3.1.0",
     "mongoose": "^6.0.14",
     "nodemailer": "^6.7.0",
     "redis": "^4.0.0",
-    "svg-captcha": "^1.4.0"
+    "svg-captcha": "^1.4.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",

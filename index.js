@@ -21,7 +21,13 @@ if (!isDev) { // 压缩中间件
 const koaJwt = jwt({ secret: config.JWT_SECRET }).unless({ path: [/^\/public/, /^\/login/] })
 // 合并中间件
 const middleWare = compose([
-  koaBody(),
+  koaBody({
+    multipart: true,
+    formidable: {
+      keepExtensions: true, // 保留文件扩展名
+      maxFieldsSize: 5 * 1024 * 1024 // 最大文件上传大小
+    }
+  }),
   koaCors(),
   helmet(),
   koaJson({ pretty: false, param: 'pretty' }),

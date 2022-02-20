@@ -2,6 +2,7 @@ import SignRecords from '@/model/SignRecords'
 import Users from '@/model/User'
 import { getTokenInfo, responseSuccess, responseFail } from '@/common/utils'
 import dayjs from 'dayjs'
+import User from '@/model/User'
 class UserController {
   // 用户签到接口
   async sign(ctx) {
@@ -96,6 +97,40 @@ class UserController {
         count: user.count,
         isSign: false
       })
+    }
+  }
+  // 修改用户信息
+  async updateUserInfo(ctx) {
+    const tokenInfo = getTokenInfo(ctx)
+    const body = ctx.request.body
+    const filterFiled = ['userName', 'passWord']
+    filterFiled.forEach(item => {
+      delete body[item]
+    })
+    await Users.updateOne({ _id: tokenInfo.userId }, body)
+    responseSuccess(ctx, '更新用户信息成功！', body)
+  }
+  // 获取用户信息
+  async getUserInfo(ctx) {
+    const tokenInfo = getTokenInfo(ctx)
+    const res = await Users.findById(tokenInfo.userId, 'nickName pic gender location personSign')
+    responseSuccess(ctx, '获取成功', res)
+  }
+  // 修改密码接口
+  async updatePassWord(ctx) {
+    try {
+      const tokenInfo = getTokenInfo(ctx)
+      const { passWord, newPassword } = ctx.request.body
+      const queryUser = await User.findById(tokenInfo.userId)
+      if (queryUser && queryUser.passWord === passWord) {
+        await User.updateOne({ _id: tokenInfo.userId }, { $set: { passWord: newPassword }})
+        responseSuccess(ctx, '修改密码成功，请牢记您的密码！')
+      } else {
+        responseFail(ctx, '您输入的原密码不正确，请重新输入！')
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(error.stack)
     }
   }
 }

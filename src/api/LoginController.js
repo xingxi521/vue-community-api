@@ -52,6 +52,7 @@ class LoginController {
       }
     } catch (error) {
       console.log(error)
+      responseFail(ctx, error.stack)
     }
   }
   // 注册接口
@@ -80,6 +81,7 @@ class LoginController {
       }
     } catch (error) {
       console.log(error)
+      responseFail(ctx, error.stack)
     }
   }
 }
