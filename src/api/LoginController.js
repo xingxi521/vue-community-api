@@ -1,9 +1,9 @@
-import sendEmail from '../config/MailerConfig'
+import sendEmail from '@/config/MailerConfig'
 import moment from 'dayjs'
 import jwt from 'jsonwebtoken'
-import config from '../config/index'
-import Users from '../model/User'
-import { checkCaptcha, responseSuccess, responseFail } from '../common/utils'
+import config from '@/config/index'
+import Users from '@/model/User'
+import { checkCaptcha, responseSuccess, responseFail } from '@/common/utils'
 class LoginController {
   // 忘记密码
   async forget(ctx) {

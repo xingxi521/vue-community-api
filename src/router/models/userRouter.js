@@ -1,5 +1,5 @@
 import Router from 'koa-router'
-import UserController from '../api/UserController'
+import UserController from '@/api/UserController'
 const router = new Router()
 router.prefix('/user')
 // 签到接口

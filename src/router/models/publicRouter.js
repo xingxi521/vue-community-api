@@ -1,8 +1,8 @@
 // 公共路由管理-不校验token
 import Router from 'koa-router'
 const router = new Router()
-import PublicController from '../api/PublicController'
-import ContentController from '../api/ContentController'
+import PublicController from '@/api/PublicController'
+import ContentController from '@/api/ContentController'
 router.prefix('/public')
 router.post('/getCaptcha', PublicController.getCaptcha)
 router.post('/list', ContentController.getContentList)

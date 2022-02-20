@@ -1,6 +1,6 @@
-import SignRecords from '../model/SignRecords'
-import Users from '../model/User'
-import { getTokenInfo, responseSuccess, responseFail } from '../common/utils'
+import SignRecords from '@/model/SignRecords'
+import Users from '@/model/User'
+import { getTokenInfo, responseSuccess, responseFail } from '@/common/utils'
 import dayjs from 'dayjs'
 class UserController {
   // 用户签到接口

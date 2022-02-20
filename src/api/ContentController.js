@@ -1,6 +1,6 @@
-import Post from '../model/Post'
-import Link from '../model/Link'
-import { checkTrim, responseFail, responsePage, responseSuccess } from '../common/utils'
+import Post from '@/model/Post'
+import Link from '@/model/Link'
+import { checkTrim, responseFail, responsePage, responseSuccess } from '@/common/utils'
 class ContentController {
   // 文章列表接口
   async getContentList(ctx) {

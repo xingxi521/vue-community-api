@@ -39,6 +39,11 @@ const webpackconfig = {
         NODE_ENV: process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'prod' ? JSON.stringify('production') : JSON.stringify('development')
       }
     })
-  ]
+  ],
+  resolve: {
+    alias: {
+      '@': utils.SRC_PATH
+    }
+  }
 }
 module.exports = webpackconfig

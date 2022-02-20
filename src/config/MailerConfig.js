@@ -8,18 +8,18 @@ async function sendEmail(sendInfo) {
     // let testAccount = await nodemailer.createTestAccount();
 
     // create reusable transporter object using the default SMTP transport
-    let transporter = nodemailer.createTransport({
-      host: "smtp.qq.com",
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.qq.com',
       port: 587,
       secure: false, // true for 465, false for other ports
       auth: {
         user: '404133428@qq.com', // generated ethereal user
-        pass: 'hruodejrhrimbhfb', // generated ethereal password
-      },
-    });
+        pass: 'hruodejrhrimbhfb' // generated ethereal password
+      }
+    })
 
     // send mail with defined transport object
-    let info = await transporter.sendMail({
+    const info = await transporter.sendMail({
       from: '"CorderX" <404133428@qq.com>', // sender address
       to: sendInfo.email, // list of receivers
       subject: sendInfo.userName !== '' ? `您好，${sendInfo.userName}！ 《CorderX社区》注册码` : '《CorderX社区》注册码', // Subject line
@@ -34,8 +34,8 @@ async function sendEmail(sendInfo) {
           </div>
           <div style="background: #fafafa; color: #b4b4b4;text-align: center; line-height: 45px; height: 45px; position: absolute; left: 0; bottom: 0;width: 100%;">系统邮件，请勿直接回复</div>
         </div>
-      `,
-    });
+      `
+    })
 
     // console.log("Message sent: %s", info.messageId);
     // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
@@ -43,7 +43,7 @@ async function sendEmail(sendInfo) {
     // Preview only available when sending through an Ethereal account
     // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-    return 'Message sent: %s', info.messageId
+    return 'Message sent: %s' + info.messageId
   } catch (error) {
     console.log(error)
   }

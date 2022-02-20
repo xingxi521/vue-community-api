@@ -1,6 +1,6 @@
-import { getValue } from '../config/RedisConfig'
+import { getValue } from '@/config/RedisConfig'
 import jsonwebtoken from 'jsonwebtoken'
-import config from '../config/index'
+import config from '@/config/index'
 // 校验验证码
 const checkCaptcha = async (uid, captcha) => {
   const redisCaptcha = await getValue(uid)
