@@ -130,7 +130,7 @@ class UserController {
       }
     } catch (error) {
       console.log(error)
-      responseFail(error.stack)
+      responseFail(ctx, error.stack)
     }
   }
 }

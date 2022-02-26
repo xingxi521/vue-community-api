@@ -6,14 +6,14 @@ const Post = mongoose.Schema({
   title: { type: String },
   content: { type: String },
   createTime: { type: Date },
-  answer: { type: Number },
-  read: { type: Number },
-  fav: { type: Number },
-  status: { type: Number },
-  isEnd: { type: Number },
-  isTop: { type: Number },
-  sort: { type: Number },
-  tags: { type: Array },
+  answer: { type: Number, default: 0 },
+  read: { type: Number, default: 0 },
+  fav: { type: Number, default: 0 },
+  status: { type: Number, default: 0 },
+  isEnd: { type: Number, default: 0 },
+  isTop: { type: Number, default: 0 },
+  sort: { type: Number, default: 0 },
+  tags: { type: Array, default: [] },
   type: { type: String }
 })
 // 前置钩子处理创建时间

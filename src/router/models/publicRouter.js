@@ -7,4 +7,5 @@ router.prefix('/public')
 router.post('/getCaptcha', PublicController.getCaptcha)
 router.post('/list', ContentController.getContentList)
 router.get('/linkList', ContentController.getLinkList)
+router.post('/reset', PublicController.reSetPassWord)
 export default router

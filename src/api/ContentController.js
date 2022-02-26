@@ -1,11 +1,12 @@
 import Post from '@/model/Post'
 import Link from '@/model/Link'
-import { checkTrim, responseFail, responsePage, responseSuccess } from '@/common/utils'
+import Users from '@/model/User'
 import config from '@/config/index'
 import dayjs from 'dayjs'
-import { v4 as uuidv4 } from 'uuid'
 import mkdir from 'make-dir'
 import fs from 'fs'
+import { v4 as uuidv4 } from 'uuid'
+import { checkTrim, responseFail, responsePage, responseSuccess, checkCaptcha, getTokenInfo } from '@/common/utils'
 class ContentController {
   // 文章列表接口
   async getContentList(ctx) {
@@ -69,6 +70,36 @@ class ContentController {
       responseSuccess(ctx, '上传成功', {
         pic: `${destPath}/${saveFileName}`
       })
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 发表新帖
+  async createPost(ctx) {
+    try {
+      const { title, type, fav, content, captcha, uid } = ctx.request.body
+      const checkPassCaptcha = await checkCaptcha(uid, captcha)
+      if (checkPassCaptcha) {
+        const tokenInfo = getTokenInfo(ctx)
+        const userQuery = await Users.findById(tokenInfo.userId)
+        if (userQuery.favs >= fav) {
+          await Users.updateOne({ _id: tokenInfo.userId }, { $inc: { favs: -fav }})
+          const addPost = new Post({
+            title,
+            type,
+            fav,
+            content,
+            userInfo: tokenInfo.userId
+          })
+          addPost.save()
+          responseSuccess(ctx, '发表新帖成功！')
+        } else {
+          responseFail(ctx, '您的积分不足，请重新调整输入悬赏积分！')
+        }
+      } else {
+        responseFail(ctx, '您输入的验证码不正确，请重新输入！')
+      }
     } catch (error) {
       console.log(error)
       responseFail(ctx, error.stack)

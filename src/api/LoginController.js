@@ -4,24 +4,39 @@ import jwt from 'jsonwebtoken'
 import config from '@/config/index'
 import Users from '@/model/User'
 import { checkCaptcha, responseSuccess, responseFail } from '@/common/utils'
+import { v4 as uuidv4 } from 'uuid'
+import { setValue } from '@/config/RedisConfig'
 class LoginController {
   // 忘记密码
   async forget(ctx) {
     try {
-      const { userName, captcha } = ctx.request.body
-      const res = await sendEmail({
-        code: captcha,
-        expire: moment().add('30', 'minutes').format('YYYY-MM-DD HH:mm:ss'),
-        email: userName,
-        userName: 'CorderX'
-      })
-      ctx.body = {
-        code: 200,
-        data: res,
-        msg: '发送邮件成功！'
+      const { userName, captcha, uid } = ctx.request.body
+      const checkPassCaptcha = await checkCaptcha(uid, captcha)
+      if (checkPassCaptcha) {
+        const query = await Users.findOne({ userName })
+        if (query && query.userName === userName) {
+          const jumpUuid = uuidv4()
+          const payLoad = jwt.sign({ userId: query._id }, config.JWT_SECRET, {
+            expiresIn: '30m'
+          })
+          setValue(jumpUuid, payLoad)
+          const res = await sendEmail({
+            code: captcha,
+            expire: moment().add('30', 'minutes').format('YYYY-MM-DD HH:mm:ss'),
+            email: query.userName,
+            userName: query.nickName,
+            uuid: jumpUuid
+          })
+          responseSuccess(ctx, '邮件已发送至您的邮箱！', res)
+        } else {
+          responseFail(ctx, '您输入的邮箱不存在，请重新输入！')
+        }
+      } else {
+        responseFail(ctx, '您输入的验证码不正确，请重新输入！')
       }
     } catch (error) {
       console.log(error)
+      responseFail(ctx, error.stack)
     }
   }
   // 登录接口
