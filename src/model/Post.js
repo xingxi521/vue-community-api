@@ -23,7 +23,7 @@ Post.pre('save', function(next) {
 })
 Post.statics = {
   // 根据不同条件查询数据库
-  getList: async function(options, sort, pageNum, pageSize) {
+  getList(options, sort, pageNum, pageSize) {
     const { skipIndex } = pager(pageNum, pageSize)
     return this.find(options)
       .sort({ [sort]: -1 })
@@ -32,6 +32,14 @@ Post.statics = {
       .populate({
         path: 'userInfo',
         select: 'nickName pic vip'
+      })
+  },
+  // 获取文章详情
+  getDetails(_id) {
+    return this.findById(_id)
+      .populate({
+        path: 'userInfo',
+        select: 'nickName pic vip role'
       })
   }
 }

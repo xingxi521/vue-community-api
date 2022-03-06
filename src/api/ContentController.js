@@ -105,5 +105,20 @@ class ContentController {
       responseFail(ctx, error.stack)
     }
   }
+  // 获取文章详情
+  async getPostDetails(ctx) {
+    try {
+      const tid = ctx.request.query.tid
+      if (!tid) {
+        responseFail(ctx, '文章不存在，请重新查询！')
+      } else {
+        const res = await Post.getDetails(tid)
+        responseSuccess(ctx, '获取成功', res)
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
 }
 export default new ContentController()
