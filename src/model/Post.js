@@ -41,6 +41,18 @@ Post.statics = {
         path: 'userInfo',
         select: 'nickName pic vip role'
       })
+  },
+  // 根据用户ID查询文章数据
+  getListByUid(uid, pageNum, pageSize) {
+    const { skipIndex } = pager(pageNum, pageSize)
+    return this.find({ userInfo: uid })
+      .sort({ 'createTime': -1 })
+      .skip(skipIndex)
+      .limit(pageSize)
+      .populate({
+        path: 'userInfo',
+        select: 'nickName pic vip'
+      })
   }
 }
 export default mongoose.model('post', Post, 'post')

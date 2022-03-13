@@ -4,6 +4,8 @@ import { pager } from '@/common/utils'
 const CommentRecords = mongoose.Schema({
   tid: { type: String, ref: 'post' },
   uid: { type: String, ref: 'users' },
+  cid: { type: String, ref: 'commentRecords', default: null },
+  replyToCid: { type: String, ref: 'commentRecords', default: null },
   content: { type: String, default: '' },
   isBest: { type: Boolean, default: false },
   isRead: { type: Boolean, default: false },
@@ -20,6 +22,16 @@ CommentRecords.statics = {
   getCommentList(tid, pageNum, pageSize) {
     const { skipIndex } = pager(pageNum, pageSize)
     return this.find({ tid })
+      .skip(skipIndex)
+      .limit(pageSize)
+      .populate({
+        path: 'uid',
+        select: 'nickName pic vip role status'
+      })
+  },
+  getComment(tid, pageNum, pageSize) {
+    const { skipIndex } = pager(pageNum, pageSize)
+    return this.find({ tid, cid: null })
       .skip(skipIndex)
       .limit(pageSize)
       .populate({

@@ -1,6 +1,7 @@
 import { getValue } from '@/config/RedisConfig'
 import jsonwebtoken from 'jsonwebtoken'
 import config from '@/config/index'
+import mongoose from 'mongoose'
 // 校验验证码
 const checkCaptcha = async (uid, captcha) => {
   const redisCaptcha = await getValue(uid)
@@ -80,6 +81,47 @@ const getTokenInfo = (ctx) => {
   const token = ctx.headers.authorization.substr(7)
   return jsonwebtoken.verify(token, config.JWT_SECRET)
 }
+// 将ObjectID转字符串
+const objectIdToStirng = (str) => {
+  if (!str) return ''
+  return mongoose.Types.ObjectId(str).toString()
+}
+// 将字符串转ObjectID
+const stringToObjectId = (id) => {
+  if (!id) return ''
+  return mongoose.Types.ObjectId(id)
+}
+// 从数组对象里根据key取出匹配的对象
+const getObjByAttr = (lst, originKey, originVal, isString) => {
+  if (!Array.isArray(lst)) {
+    return null
+  }
+  var result = null
+  for (const value of lst) {
+    if ((isString ? objectIdToStirng(value[originKey]) : value[originKey]) === originVal) {
+      result = value
+      break
+    }
+  }
+  return result
+}
+// 数组对象里根据key和value匹配取出指定key值
+const getAttrByAttr = (lst, originKey, originVal, targetKey, defaultValue) => {
+  if (!Array.isArray(lst)) {
+    return ''
+  }
+  var result = '未知' + originKey + ':' + originVal
+  if (defaultValue !== undefined) {
+    result = defaultValue
+  }
+  for (const value of lst) {
+    if (value[originKey] === originVal) {
+      result = value[targetKey]
+      break
+    }
+  }
+  return result
+}
 export {
   checkCaptcha,
   responseSuccess,
@@ -87,5 +129,9 @@ export {
   pager,
   checkTrim,
   responsePage,
-  getTokenInfo
+  getTokenInfo,
+  objectIdToStirng,
+  getObjByAttr,
+  getAttrByAttr,
+  stringToObjectId
 }

@@ -1,5 +1,6 @@
 import Router from 'koa-router'
 import UserController from '@/api/UserController'
+import ContentController from '@/api/ContentController'
 const router = new Router()
 router.prefix('/user')
 // 签到接口
@@ -13,4 +14,6 @@ router.post('/updateInfo', UserController.updateUserInfo)
 router.get('/getUserInfo', UserController.getUserInfo)
 // 修改密码
 router.post('/updatePassWord', UserController.updatePassWord)
+// 获取用户发表过的帖子数据
+router.post('/getSendPost', ContentController.getSendPost)
 export default router

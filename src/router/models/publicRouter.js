@@ -9,6 +9,7 @@ router.prefix('/public')
 router.post('/getCaptcha', PublicController.getCaptcha)
 // 获取文章列表
 router.post('/list', ContentController.getContentList)
+// 获取温馨通道/友情链接
 router.get('/linkList', ContentController.getLinkList)
 // 重置密码
 router.post('/reset', PublicController.reSetPassWord)
@@ -16,4 +17,6 @@ router.post('/reset', PublicController.reSetPassWord)
 router.get('/postDetails', ContentController.getPostDetails)
 // 获取文章评论数据
 router.post('/commentList', CommentController.getCommentList)
+
+// router.post('/comment', CommentController.getComment)
 export default router

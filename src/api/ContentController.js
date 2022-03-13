@@ -1,6 +1,7 @@
 import Post from '@/model/Post'
 import Link from '@/model/Link'
 import Users from '@/model/User'
+import CollectRecords from '@/model/CollectRecords'
 import config from '@/config/index'
 import dayjs from 'dayjs'
 import mkdir from 'make-dir'
@@ -112,8 +113,83 @@ class ContentController {
       if (!tid) {
         responseFail(ctx, '文章不存在，请重新查询！')
       } else {
-        const res = await Post.getDetails(tid)
-        responseSuccess(ctx, '获取成功', res)
+        let res = await Post.getDetails(tid)
+        if (res) {
+          await Post.updateOne({ _id: tid }, { $inc: { read: 1 }})
+          res = res.toJSON()
+          const isLogin = ctx.headers.authorization
+          if (isLogin) { // 如果用户是登录状态则需要查出哪些评论是用户点赞过的
+            const tokenInfo = getTokenInfo(ctx)
+            const hasCollect = await CollectRecords.findOne({ uid: tokenInfo.userId, tid })
+            if (hasCollect) {
+              res.isCollect = true
+            } else {
+              res.isCollect = false
+            }
+          }
+          responseSuccess(ctx, '获取成功', res)
+        } else {
+          responseSuccess(ctx, '获取文章详情数据失败！')
+        }
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 更细文章数据
+  async updatePost(ctx) {
+    try {
+      const { title, content, _id, captcha, uid } = ctx.request.body
+      const checkPassCaptcha = await checkCaptcha(uid, captcha)
+      if (checkPassCaptcha) {
+        const tokenInfo = getTokenInfo(ctx)
+        const postData = await Post.getDetails(_id)
+        if (postData) {
+          if (postData.userInfo.id === tokenInfo.userId) {
+            await Post.updateOne({ _id }, { $set: { content, title }})
+            responseSuccess(ctx, '更新帖子成功！')
+          } else {
+            responseFail(ctx, '您不是该帖的贴主，无权进行编辑！')
+          }
+        } else {
+          responseFail(ctx, '文章不存在！')
+        }
+      } else {
+        responseFail(ctx, '您输入的验证码不正确，请重新输入！')
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 获取用户发表帖子数据
+  async getSendPost(ctx) {
+    try {
+      const tokenInfo = getTokenInfo(ctx)
+      const { pageSize, pageNum } = ctx.request.body
+      const result = await Post.getListByUid(tokenInfo.userId, pageNum, pageSize)
+      const total = await Post.countDocuments({ userInfo: tokenInfo.userId })
+      responsePage(ctx, '获取用户发表帖子数据成功', result, pageNum, pageSize, total)
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 删除文章
+  async deletePost(ctx) {
+    try {
+      const { tid } = ctx.request.body
+      const postData = await Post.getDetails(tid)
+      if (postData) {
+        if (postData.isEnd !== 1) {
+          await Post.deleteOne({ _id: tid })
+          responseSuccess(ctx, '删除成功！')
+        } else {
+          responseFail(ctx, '该文章已结贴，无法删除！')
+        }
+      } else {
+        responseFail(ctx, '文章不存在，删除失败！')
       }
     } catch (error) {
       console.log(error)
