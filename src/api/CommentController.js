@@ -48,36 +48,13 @@ class CommentController {
     }
   }
   // 获取评论列表
-  // async getCommentList(ctx) {
-  //   try {
-  //     const { tid, pageNum, pageSize } = ctx.request.body
-  //     let result = await CommentRecords.getCommentList(tid, pageNum, pageSize)
-  //     const total = await CommentRecords.countDocuments({ tid })
-  //     const isLogin = ctx.headers.authorization
-  //     if (isLogin) { // 如果用户是登录状态则需要查出哪些评论是用户点赞过的
-  //       // 将查询结果先做转换
-  //       const tokenInfo = getTokenInfo(ctx)
-  //       result = result.map(item => item.toJSON())
-  //       for (let i = 0; i < result.length; i++) {
-  //         result[i].isNice = false
-  //         const hasNiceRecords = await NiceRecords.findOne({ cid: result[i]._id, uid: tokenInfo.userId })
-  //         if (hasNiceRecords) {
-  //           result[i].isNice = true
-  //         }
-  //       }
-  //     }
-  //     responsePage(ctx, '获取评论数据成功', result, pageNum, pageSize, total)
-  //   } catch (error) {
-  //     console.log(error)
-  //     responseFail(ctx, error.stack)
-  //   }
-  // }
   async getCommentList(ctx) {
     try {
       const { tid, pageNum, pageSize } = ctx.request.body
       let result = await CommentRecords.getComment(tid, pageNum, pageSize)
       // 把结果处理成功children
       result = await this.resultToChildren(result)
+      // 处理回复评论里的评论数据
       result.forEach(item => {
         item.children.forEach(child => {
           if (child.replyToCid) {
@@ -85,6 +62,25 @@ class CommentController {
           }
         })
       })
+      // 如果是登录状态的话 需要对评论判断是否当前用户已经点赞过
+      const isLogin = ctx.headers.authorization
+      if (isLogin) {
+        const tokenInfo = getTokenInfo(ctx)
+        for (let i = 0; i < result.length; i++) {
+          result[i].isNice = false
+          const hasNiceRecords = await NiceRecords.findOne({ cid: result[i]._id, uid: tokenInfo.userId })
+          if (hasNiceRecords) {
+            result[i].isNice = true
+          }
+          for (let j = 0; j < result[i].children.length; j++) {
+            result[i].children[j].isNice = false
+            const hasNiceRecords = await NiceRecords.findOne({ cid: result[i].children[j]._id, uid: tokenInfo.userId })
+            if (hasNiceRecords) {
+              result[i].children[j].isNice = true
+            }
+          }
+        }
+      }
       const total = await CommentRecords.countDocuments({ tid, cid: null })
       responsePage(ctx, '获取评论数据成功', result, pageNum, pageSize, total)
     } catch (error) {
@@ -143,6 +139,38 @@ class CommentController {
         const result = newNiceRecords.save()
         await CommentRecords.updateOne({ _id: cid }, { $inc: { niceCount: 1 }})
         responseSuccess(ctx, '点赞成功！', result)
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 编辑评论
+  async updateComment(ctx) {
+    try {
+      const { content, _id } = ctx.request.body
+      const comment = await CommentRecords.findById(_id)
+      if (comment) {
+        await CommentRecords.updateOne({ _id }, { $set: { content }})
+        responseSuccess(ctx, '编辑评论成功！')
+      } else {
+        responseFail(ctx, '评论不存在！')
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 删除评论
+  async deleteComment(ctx) {
+    try {
+      const { _id } = ctx.request.body
+      const comment = await CommentRecords.findById(_id)
+      if (comment) {
+        await CommentRecords.deleteOne({ _id })
+        responseSuccess(ctx, '删除评论成功！')
+      } else {
+        responseFail(ctx, '评论不存在！')
       }
     } catch (error) {
       console.log(error)

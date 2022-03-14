@@ -19,16 +19,6 @@ CommentRecords.pre('save', function(next) {
 })
 CommentRecords.statics = {
   // 查询评论数据
-  getCommentList(tid, pageNum, pageSize) {
-    const { skipIndex } = pager(pageNum, pageSize)
-    return this.find({ tid })
-      .skip(skipIndex)
-      .limit(pageSize)
-      .populate({
-        path: 'uid',
-        select: 'nickName pic vip role status'
-      })
-  },
   getComment(tid, pageNum, pageSize) {
     const { skipIndex } = pager(pageNum, pageSize)
     return this.find({ tid, cid: null })

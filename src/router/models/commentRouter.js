@@ -8,4 +8,8 @@ router.post('/addComment', CommentRecords.addComment)
 router.post('/setBestComment', CommentRecords.setBestComment)
 // 点赞评论
 router.post('/setNice', CommentRecords.setNice)
+// 编辑评论
+router.post('/updateComment', CommentRecords.updateComment)
+// 删除评论
+router.post('/deleteComment', CommentRecords.deleteComment)
 export default router
