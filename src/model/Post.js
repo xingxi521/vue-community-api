@@ -53,6 +53,12 @@ Post.statics = {
         path: 'userInfo',
         select: 'nickName pic vip'
       })
+  },
+  // 查询周热议
+  getTopWeek() {
+    return this.find({ createTime: { $gte: dayjs().subtract(7, 'days') }}, { title: 1, answer: 1 })
+      .sort({ answer: -1 })
+      .limit(10)
   }
 }
 export default mongoose.model('post', Post, 'post')

@@ -17,6 +17,12 @@ router.post('/reset', PublicController.reSetPassWord)
 router.get('/postDetails', ContentController.getPostDetails)
 // 获取文章评论数据
 router.post('/commentList', CommentController.getCommentList)
-
-// router.post('/comment', CommentController.getComment)
+// 获取本周热议
+router.get('/topWeek', ContentController.getTopWeek)
+// 获取最新签到记录
+router.get('/getNewSign', PublicController.getNewSignRecords)
+// 获取今日最快签到
+router.get('/getFaskSign', PublicController.getFaskSignRecords)
+// 获取签到总榜成功
+router.get('/getTopSign', PublicController.getTopSign)
 export default router

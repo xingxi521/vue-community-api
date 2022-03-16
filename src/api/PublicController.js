@@ -1,6 +1,7 @@
 import svgCaptcha from 'svg-captcha'
 import { setValue, getValue, delKey } from '@/config/RedisConfig'
 import { responseSuccess, responseFail } from '@/common/utils'
+import SignRecords from '@/model/SignRecords'
 import config from '@/config/index'
 import jsonwebtoken from 'jsonwebtoken'
 import Users from '@/model/User'
@@ -36,6 +37,36 @@ class PublicController {
       } else {
         responseFail(ctx, '(error:1)重置链接异常，请重新发送邮件重置！')
       }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.message)
+    }
+  }
+  // 最新签到
+  async getNewSignRecords(ctx) {
+    try {
+      const result = await SignRecords.getNewComment()
+      responseSuccess(ctx, '获取最新签到记录成功！', result)
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.message)
+    }
+  }
+  // 今天最快签到
+  async getFaskSignRecords(ctx) {
+    try {
+      const result = await SignRecords.getFaskComment()
+      responseSuccess(ctx, '获取今日签到最快记录成功！', result)
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.message)
+    }
+  }
+  // 签到总榜
+  async getTopSign(ctx) {
+    try {
+      const result = await Users.getTopSign()
+      responseSuccess(ctx, '获取签到总榜成功！', result)
     } catch (error) {
       console.log(error)
       responseFail(ctx, error.message)

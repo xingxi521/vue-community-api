@@ -196,5 +196,15 @@ class ContentController {
       responseFail(ctx, error.stack)
     }
   }
+  // 获取本周热议
+  async getTopWeek(ctx) {
+    try {
+      const result = await Post.getTopWeek()
+      responseSuccess(ctx, '获取本周热议成功', result)
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
 }
 export default new ContentController()

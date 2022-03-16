@@ -85,4 +85,12 @@ Users.post('update', function(error, res, next) {
     next() // The `update()` call will still error out.
   }
 })
+Users.statics = {
+  // 查询签到榜
+  getTopSign() {
+    return this.find({ count: { $gt: 0 }}, { nickName: 1, count: 1, pic: 1 })
+      .sort({ count: -1 })
+      .limit(20)
+  }
+}
 export default mongoose.model('users', Users, 'users')
