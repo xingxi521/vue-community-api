@@ -176,6 +176,17 @@ class ContentController {
       responseFail(ctx, error.stack)
     }
   }
+  // 获取用户发帖数据-（最近发帖记录）
+  async getPostPublic(ctx) {
+    try {
+      const { uid } = ctx.request.body
+      const result = await Post.getListByUid(uid, 1, 20)
+      responseSuccess(ctx, '获取用户发表帖子数据成功', result)
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
   // 删除文章
   async deletePost(ctx) {
     try {

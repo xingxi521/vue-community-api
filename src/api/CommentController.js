@@ -177,5 +177,16 @@ class CommentController {
       responseFail(ctx, error.stack)
     }
   }
+  // 获取用户最近评论数据
+  async getCommentLately(ctx) {
+    try {
+      const { uid } = ctx.request.body
+      const result = await CommentRecords.getCommentByUid(uid, 1, 20)
+      responseSuccess(ctx, '获取用户最近评论数据成功', result)
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
 }
 export default new CommentController()

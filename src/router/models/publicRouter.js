@@ -25,4 +25,8 @@ router.get('/getNewSign', PublicController.getNewSignRecords)
 router.get('/getFaskSign', PublicController.getFaskSignRecords)
 // 获取签到总榜成功
 router.get('/getTopSign', PublicController.getTopSign)
+// 获取用户发表过的帖子数据
+router.post('/getPostLately', ContentController.getPostPublic)
+// 获取用户最近评论数据
+router.post('/getCommentLately', CommentController.getCommentLately)
 export default router

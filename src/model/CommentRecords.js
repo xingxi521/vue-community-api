@@ -28,6 +28,18 @@ CommentRecords.statics = {
         path: 'uid',
         select: 'nickName pic vip role status'
       })
+  },
+  // 根据用户ID查询评论数据
+  getCommentByUid(uid, pageNum, pageSize) {
+    const { skipIndex } = pager(pageNum, pageSize)
+    return this.find({ uid })
+      .sort({ 'createTime': -1 })
+      .skip(skipIndex)
+      .limit(pageSize)
+      .populate({
+        path: 'tid',
+        select: 'content title'
+      })
   }
 }
 export default mongoose.model('commentRecords', CommentRecords, 'commentRecords')
