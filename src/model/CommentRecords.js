@@ -5,6 +5,7 @@ const CommentRecords = mongoose.Schema({
   tid: { type: String, ref: 'post' },
   uid: { type: String, ref: 'users' },
   cid: { type: String, ref: 'commentRecords', default: null },
+  cuid: { type: String, ref: 'users' },
   replyToCid: { type: String, ref: 'commentRecords', default: null },
   content: { type: String, default: '' },
   isBest: { type: Boolean, default: false },
@@ -39,6 +40,26 @@ CommentRecords.statics = {
       .populate({
         path: 'tid',
         select: 'content title'
+      })
+  },
+  // 根据ID查询所以未读消息
+  getNoReadComment(cuid, pageNum, pageSize) {
+    const { skipIndex } = pager(pageNum, pageSize)
+    return this.find({ cuid, isRead: false })
+      .sort({ 'createTime': -1 })
+      .skip(skipIndex)
+      .limit(pageSize)
+      .populate({
+        path: 'tid',
+        select: 'content title'
+      })
+      .populate({
+        path: 'cuid',
+        select: 'nickName pic vip role status'
+      })
+      .populate({
+        path: 'uid',
+        select: 'nickName pic vip role status'
       })
   }
 }

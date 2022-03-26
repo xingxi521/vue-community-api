@@ -14,6 +14,7 @@ import './src/config/MongoDB'
 import './src/config/RedisConfig'
 import errorHandler from './src/common/errorHandler'
 import config from './src/config/index'
+import WebSocket from '@/config/WebSocket'
 const isDev = process.env.NODE_ENV !== 'production'
 if (!isDev) { // 压缩中间件
   app.use(compress())
@@ -41,4 +42,7 @@ app.use(middleWare)
 const port = isDev ? 3000 : 12005
 app.listen(port, function () {
   console.log('服务端运行在3000端口')
+  const socketServer = new WebSocket()
+  socketServer.init()
+  global.wss = socketServer
 })

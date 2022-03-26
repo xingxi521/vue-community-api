@@ -14,14 +14,15 @@ class CommentController {
   async addComment(ctx) {
     try {
       const tokenInfo = getTokenInfo(ctx)
-      const { tid, content, cid, replyToCid } = ctx.request.body
+      const { tid, content, cid, replyToCid, cuid } = ctx.request.body
       let commentRecords
       if (cid && !replyToCid) { // 用户是回复别人的评论而且是一级评论
         commentRecords = new CommentRecords({
           tid,
           content,
           uid: tokenInfo.userId,
-          cid
+          cid,
+          cuid
         })
       } else if (cid && replyToCid) { // 用户回复的是别人回复别人的评论
         commentRecords = new CommentRecords({
@@ -29,18 +30,26 @@ class CommentController {
           content,
           uid: tokenInfo.userId,
           cid,
-          replyToCid
+          replyToCid,
+          cuid
         })
       } else {
         commentRecords = new CommentRecords({
           tid,
           content,
-          uid: tokenInfo.userId
+          uid: tokenInfo.userId,
+          cuid
         })
       }
       commentRecords.save()
       // 评论数+1
       await Post.updateOne({ _id: tid }, { $inc: { answer: 1 }})
+      // 统计未读消息，给被评论人发送socket消息通知
+      const count = await CommentRecords.countDocuments({ cuid, isRead: false })
+      global.wss.send(cuid, JSON.stringify({
+        event: 'getNoReadCount',
+        message: count
+      }))
       responseSuccess(ctx, '添加评论成功', commentRecords)
     } catch (error) {
       console.log(error)
@@ -183,6 +192,46 @@ class CommentController {
       const { uid } = ctx.request.body
       const result = await CommentRecords.getCommentByUid(uid, 1, 20)
       responseSuccess(ctx, '获取用户最近评论数据成功', result)
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 获取用户未读消息
+  async getNoReadComment(ctx) {
+    try {
+      const { pageNum, pageSize } = ctx.request.body
+      const tokenInfo = getTokenInfo(ctx)
+      const result = await CommentRecords.getNoReadComment(tokenInfo.userId, pageNum, pageSize)
+      const total = await CommentRecords.countDocuments({ cuid: tokenInfo.userId, isRead: false })
+      responsePage(ctx, '获取未读消息成功', result, pageNum, pageSize, total)
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 标记评论为已读
+  async markCommentRead(ctx) {
+    try {
+      const { id } = ctx.request.query
+      const comment = await CommentRecords.findById(id)
+      if (comment) {
+        await CommentRecords.updateOne({ _id: id }, { isRead: true })
+        responseSuccess(ctx, '标记已读成功！')
+      } else {
+        responseFail(ctx, '评论不存在！')
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 清空所有未读消息
+  async markAllComment(ctx) {
+    try {
+      const tokenInfo = getTokenInfo(ctx)
+      await CommentRecords.updateMany({ cuid: tokenInfo.userId }, { isRead: true })
+      responseSuccess(ctx, '清空所有未读消息成功！')
     } catch (error) {
       console.log(error)
       responseFail(ctx, error.stack)

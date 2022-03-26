@@ -11,5 +11,7 @@ export default {
   FRONT_URL: process.env.NODE_ENV === 'production' ? 'http://192.168.56.1:11006/#/reset' : 'http://192.168.0.105:8080/#/reset',
   // 邮件服务账号密码配置
   NODE_MAIL_USER: '404133428@qq.com',
-  NODE_MAIL_PASS: ''
+  NODE_MAIL_PASS: '',
+  // websocket端口
+  WS_PORT: 3001
 }

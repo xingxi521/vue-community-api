@@ -12,4 +12,10 @@ router.post('/setNice', CommentRecords.setNice)
 router.post('/updateComment', CommentRecords.updateComment)
 // 删除评论
 router.post('/deleteComment', CommentRecords.deleteComment)
+// 获取未读消息
+router.post('/getNoReadComment', CommentRecords.getNoReadComment)
+// 标记为已读消息
+router.get('/markCommentRead', CommentRecords.markCommentRead)
+// 清空所有未读消息
+router.get('/markAllComment', CommentRecords.markAllComment)
 export default router
