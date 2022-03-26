@@ -112,8 +112,9 @@ class UserController {
   }
   // 获取用户信息
   async getUserInfo(ctx) {
+    const { _id } = ctx.request.query
     const tokenInfo = getTokenInfo(ctx)
-    const res = await Users.findById(tokenInfo.userId, 'nickName pic gender location personSign vip favs createTime')
+    const res = await Users.findById(_id || tokenInfo.userId, 'nickName pic gender location personSign vip favs createTime')
     responseSuccess(ctx, '获取成功', res)
   }
   // 修改密码接口

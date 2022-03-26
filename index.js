@@ -39,7 +39,7 @@ const middleWare = compose([
 app.use(middleWare)
   .use(router())
 // 开发环境下是docker镜像的12005端口
-const port = isDev ? 3000 : 12005
+const port = isDev ? 3000 : 3000
 app.listen(port, function () {
   console.log('服务端运行在3000端口')
   const socketServer = new WebSocket()
