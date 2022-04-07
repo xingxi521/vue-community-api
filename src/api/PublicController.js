@@ -16,6 +16,7 @@ class PublicController {
       noise: Math.floor(Math.random() * 5)
     })
     setValue(uid, captcha.text, 5 * 60)
+    delete captcha.text
     ctx.body = captcha
   }
   // 重置密码
