@@ -27,7 +27,9 @@ class ContentController {
           }
         }
       }
-      params.isTop = body.isTop
+      if (!checkTrim(body.isTop)) {
+        params.isTop = body.isTop
+      }
       const records = await Post.getList(params, body.sort || 'createTime', body.pageNum, body.pageSize)
       const total = await Post.countDocuments(params)
       responsePage(ctx, '获取文章分页数据成功', records, body.pageNum, body.pageSize, total)
@@ -137,7 +139,7 @@ class ContentController {
       responseFail(ctx, error.stack)
     }
   }
-  // 更细文章数据
+  // 更细文章数据-前台
   async updatePost(ctx) {
     try {
       const { title, content, _id, captcha, uid } = ctx.request.body
@@ -157,6 +159,22 @@ class ContentController {
         }
       } else {
         responseFail(ctx, '您输入的验证码不正确，请重新输入！')
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 更新文章数据-后台管理系统
+  async updatePostManage(ctx) {
+    try {
+      const { title, content, _id, tags, fav, isTop, isEnd, type } = ctx.request.body
+      const postData = await Post.getDetails(_id)
+      if (postData) {
+        await Post.updateOne({ _id }, { $set: { content, title, tags, fav, isTop, isEnd, type }})
+        responseSuccess(ctx, '更新帖子成功！')
+      } else {
+        responseFail(ctx, '文章不存在！')
       }
     } catch (error) {
       console.log(error)

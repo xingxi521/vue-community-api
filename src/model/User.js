@@ -18,8 +18,8 @@ const Users = mongoose.Schema({
     default: ''
   },
   role: {
-    type: String,
-    default: 'user'
+    type: Array,
+    default: ['user']
   },
   createTime: {
     type: Date
