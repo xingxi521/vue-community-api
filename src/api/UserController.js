@@ -1,6 +1,6 @@
 import SignRecords from '@/model/SignRecords'
 import Users from '@/model/User'
-import { getTokenInfo, responseSuccess, responseFail } from '@/common/utils'
+import { getTokenInfo, responseSuccess, responseFail, responsePage } from '@/common/utils'
 import dayjs from 'dayjs'
 import User from '@/model/User'
 class UserController {
@@ -99,7 +99,7 @@ class UserController {
       })
     }
   }
-  // 修改用户信息
+  // 修改用户信息-前台
   async updateUserInfo(ctx) {
     const tokenInfo = getTokenInfo(ctx)
     const body = ctx.request.body
@@ -128,6 +128,91 @@ class UserController {
         responseSuccess(ctx, '修改密码成功，请牢记您的密码！')
       } else {
         responseFail(ctx, '您输入的原密码不正确，请重新输入！')
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 新增用户-后台
+  async addUser(ctx) {
+    try {
+      const body = ctx.request.body
+      const checkExit = await User.findOne({ userName: body.userName })
+      if (checkExit) {
+        responseFail(ctx, `用户名:${body.userName}，已存在，请重新输入用户名！`)
+      } else {
+        const userRecord = new User(body)
+        userRecord.save()
+        const result = userRecord.toJSON()
+        const filterFiled = ['passWord']
+        filterFiled.forEach(item => {
+          delete result[item]
+        })
+        responseSuccess(ctx, '新增用户成功！', result)
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 删除用户-后台
+  async deleteUser(ctx) {
+    try {
+      const { _id } = ctx.request.body
+      if (Array.isArray(_id)) {
+        await User.deleteMany({ _id: { $in: _id }})
+        responseSuccess(ctx, '批量删除用户成功！')
+      } else {
+        await User.deleteOne({ _id })
+        responseSuccess(ctx, '删除用户成功！')
+      }
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 获取用户信息-后台
+  async getUserList(ctx) {
+    try {
+      const body = ctx.request.body
+      const records = await User.getList(body, body.sort || 'createTime', body.pageNum, body.pageSize)
+      const total = await User.countDocuments(body)
+      responsePage(ctx, '获取文章分页数据成功', records, body.pageNum, body.pageSize, total)
+    } catch (error) {
+      console.log(error)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 修改用户信息-后台
+  async updateUser(ctx) {
+    try {
+      const body = ctx.request.body
+      if (body.ids) { // 批量修改
+        await User.updateMany({ _id: { $in: body.ids }}, { $set: { ...body.params }})
+        responseSuccess(ctx, '批量修改成功！')
+      } else { // 单个用户修改
+        const userRecords = await User.findById(body._id)
+        if (!body.passWord) { // 用户没修改密码
+          delete body.passWord
+        }
+        if (userRecords) {
+          if (userRecords.userName === body.userName) { // 查询的出来的账号跟传过来的账号一样 证明没去修改账号
+            delete body.userName
+            await User.updateOne({ _id: body._id }, body)
+            responseSuccess(ctx, '修改用户信息成功！')
+          } else {
+            const checkExitUser = await User.find({ userName: body.userName })
+            if (checkExitUser.length) {
+              responseFail(ctx, '您修改的登录邮箱' + body.userName + ',已存在，请重新输入！')
+            } else {
+              await User.updateOne({ _id: body._id }, body)
+              responseSuccess(ctx, '修改用户信息成功！')
+            }
+          }
+        } else {
+          responseFail(ctx, '账号不存在，修改失败！')
+        }
       }
     } catch (error) {
       console.log(error)

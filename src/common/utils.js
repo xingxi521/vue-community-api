@@ -122,6 +122,28 @@ const getAttrByAttr = (lst, originKey, originVal, targetKey, defaultValue) => {
   }
   return result
 }
+
+// 生成菜单树形结构
+const getMenuTree = (data, pid) => {
+  // eslint-disable-next-line eqeqeq
+  const topData = data.filter(item => item.pid == pid)
+  topData.forEach(topMenu => {
+    topMenu.children = getMenuTree(data, objectIdToStirng(topMenu._id))
+  })
+  return topData
+}
+// 树形菜单数据取指定字段数据
+const getTreeFiled = (data, filed) => {
+  const result = []
+  data.forEach(item => {
+    if (item.children && item.children.length > 0) {
+      getTreeFiled(item.children, filed)
+    } else {
+      result.push(item[filed])
+    }
+  })
+  return result
+}
 export {
   checkCaptcha,
   responseSuccess,
@@ -133,5 +155,7 @@ export {
   objectIdToStirng,
   getObjByAttr,
   getAttrByAttr,
-  stringToObjectId
+  stringToObjectId,
+  getMenuTree,
+  getTreeFiled
 }
