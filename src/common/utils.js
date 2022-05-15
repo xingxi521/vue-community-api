@@ -144,6 +144,40 @@ const getTreeFiled = (data, filed) => {
   })
   return result
 }
+// 生成前端路由表
+const getMenuRoter = (treeData, userRole, isAdmin) => {
+  const result = []
+  treeData.forEach(item => {
+    if (item.type === 0) { // 目录
+      if (userRole.indexOf(item._id + '') || isAdmin) {
+        result.push({
+          _id: item._id,
+          path: item.path,
+          meta: {
+            title: item.title,
+            hideInBread: item.hideInBread,
+            hideInMenu: item.hideInMenu,
+            notCache: item.notCache,
+            icon: item.icon
+          },
+          component: item.component,
+          children: getMenuRoter(item.children, userRole)
+        })
+      }
+    } else if (item.type === 2) { // 链接
+      result.push({
+        _id: item._id,
+        path: item.path,
+        meta: {
+          title: item.title,
+          icon: item.icon,
+          href: item.link
+        }
+      })
+    }
+  })
+  return result
+}
 export {
   checkCaptcha,
   responseSuccess,
@@ -157,5 +191,6 @@ export {
   getAttrByAttr,
   stringToObjectId,
   getMenuTree,
-  getTreeFiled
+  getTreeFiled,
+  getMenuRoter
 }

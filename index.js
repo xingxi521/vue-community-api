@@ -15,11 +15,13 @@ import './src/config/RedisConfig'
 import errorHandler from './src/common/errorHandler'
 import config from './src/config/index'
 import WebSocket from '@/config/WebSocket'
+import authMiddleWare from '@/common/authMiddleWare'
+import { initAdmin } from '@/common/initAdmin'
 const isDev = process.env.NODE_ENV !== 'production'
 if (!isDev) { // 压缩中间件
   app.use(compress())
 }
-const koaJwt = jwt({ secret: config.JWT_SECRET }).unless({ path: [/^\/public/, /^\/login/] })
+const koaJwt = jwt({ secret: config.JWT_SECRET }).unless({ path: config.PUBLIC_PATH })
 // 合并中间件
 const middleWare = compose([
   koaBody({
@@ -34,7 +36,8 @@ const middleWare = compose([
   koaJson({ pretty: false, param: 'pretty' }),
   statics(path.join(__dirname, '../public')),
   errorHandler,
-  koaJwt
+  koaJwt,
+  authMiddleWare
 ])
 app.use(middleWare)
   .use(router())
@@ -45,4 +48,5 @@ app.listen(port, function () {
   const socketServer = new WebSocket()
   socketServer.init()
   global.wss = socketServer
+  initAdmin()
 })

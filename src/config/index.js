@@ -13,5 +13,9 @@ export default {
   NODE_MAIL_USER: '404133428@qq.com',
   NODE_MAIL_PASS: '',
   // websocket端口
-  WS_PORT: 3001
+  WS_PORT: 3001,
+  // 超级管理员列表
+  ADMIN_LIST: ['404133428@qq.com'],
+  // 公共接口，不需要token的
+  PUBLIC_PATH: [/^\/public/, /^\/login/]
 }
