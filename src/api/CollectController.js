@@ -3,6 +3,7 @@
  */
 import CollectRecords from '@/model/CollectRecords'
 import { responseFail, responseSuccess, getTokenInfo, responsePage } from '@/common/utils'
+import { errorLog4js } from '@/common/log4js'
 class CollectController {
   // 收藏帖子
   async collectPost(ctx) {
@@ -22,7 +23,7 @@ class CollectController {
         responseSuccess(ctx, '取消收藏成功！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -35,7 +36,7 @@ class CollectController {
       const total = await CollectRecords.countDocuments({ uid: tokenInfo.userId })
       responsePage(ctx, '获取收藏帖子成功', result, pageNum, pageSize, total)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }

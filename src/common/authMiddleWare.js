@@ -30,8 +30,8 @@ export default async(ctx, next) => {
       ctx.throw(error)
     }
   }
-  // 过滤掉公共不需要token的接口
-  const publicPath = config.PUBLIC_PATH
+  // 过滤掉公共不需要数据校验的接口
+  const publicPath = config.AUTH_WHILE_lIST
   if (publicPath.some(path => path.test(ctx.url))) {
     await next()
     return

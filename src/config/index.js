@@ -16,6 +16,8 @@ export default {
   WS_PORT: 3001,
   // 超级管理员列表
   ADMIN_LIST: ['404133428@qq.com'],
-  // 公共接口，不需要token的
-  PUBLIC_PATH: [/^\/public/, /^\/login/]
+  // 前端公共接口，不需要token的
+  PUBLIC_PATH: [/^\/public/, /^\/login/],
+  // 后台数据权限白名单
+  AUTH_WHILE_lIST: [/^\/public/, /^\/login/, /^\/collect/, /^\/comment/, /^\/content/, /^\/user/, /^\/role\/getMenuRouter/, /^\/role\/getRoleName/, /^\/home\/getStatistics/]
 }

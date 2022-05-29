@@ -149,10 +149,11 @@ const getMenuRoter = (treeData, userRole, isAdmin) => {
   const result = []
   treeData.forEach(item => {
     if (item.type === 0) { // 目录
-      if (userRole.indexOf(item._id + '') || isAdmin) {
+      if (userRole.indexOf(item._id + '') !== -1 || isAdmin) {
         result.push({
           _id: item._id,
           path: item.path,
+          name: item.name,
           meta: {
             title: item.title,
             hideInBread: item.hideInBread,
@@ -161,13 +162,14 @@ const getMenuRoter = (treeData, userRole, isAdmin) => {
             icon: item.icon
           },
           component: item.component,
-          children: getMenuRoter(item.children, userRole)
+          children: getMenuRoter(item.children, userRole, isAdmin)
         })
       }
     } else if (item.type === 2) { // 链接
       result.push({
         _id: item._id,
         path: item.path,
+        name: item.name,
         meta: {
           title: item.title,
           icon: item.icon,

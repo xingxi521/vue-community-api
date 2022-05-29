@@ -5,6 +5,7 @@ import SignRecords from '@/model/SignRecords'
 import config from '@/config/index'
 import jsonwebtoken from 'jsonwebtoken'
 import Users from '@/model/User'
+import { errorLog4js } from '@/common/log4js'
 class PublicController {
   // 获取验证码
   async getCaptcha(ctx) {
@@ -39,7 +40,7 @@ class PublicController {
         responseFail(ctx, '(error:1)重置链接异常，请重新发送邮件重置！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.message)
     }
   }
@@ -49,7 +50,7 @@ class PublicController {
       const result = await SignRecords.getNewComment()
       responseSuccess(ctx, '获取最新签到记录成功！', result)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.message)
     }
   }
@@ -59,7 +60,7 @@ class PublicController {
       const result = await SignRecords.getFaskComment()
       responseSuccess(ctx, '获取今日签到最快记录成功！', result)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.message)
     }
   }
@@ -69,7 +70,7 @@ class PublicController {
       const result = await Users.getTopSign()
       responseSuccess(ctx, '获取签到总榜成功！', result)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.message)
     }
   }

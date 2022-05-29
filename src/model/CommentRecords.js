@@ -19,12 +19,31 @@ CommentRecords.pre('save', function(next) {
   next()
 })
 CommentRecords.statics = {
-  // 查询评论数据
+  // 根据文章ID查询评论数据
   getComment(tid, pageNum, pageSize) {
     const { skipIndex } = pager(pageNum, pageSize)
     return this.find({ tid, cid: null })
       .skip(skipIndex)
       .limit(pageSize)
+      .populate({
+        path: 'uid',
+        select: 'nickName pic vip role status'
+      })
+  },
+  // 查询所有评论数据
+  getCommentAll(pageNum, pageSize) {
+    const { skipIndex } = pager(pageNum, pageSize)
+    return this.find({ cid: null })
+      .skip(skipIndex)
+      .limit(pageSize)
+      .populate({
+        path: 'tid',
+        select: 'content title isEnd'
+      })
+      .populate({
+        path: 'cuid',
+        select: 'nickName pic vip role status'
+      })
       .populate({
         path: 'uid',
         select: 'nickName pic vip role status'

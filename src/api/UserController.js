@@ -3,6 +3,7 @@ import Users from '@/model/User'
 import { getTokenInfo, responseSuccess, responseFail, responsePage } from '@/common/utils'
 import dayjs from 'dayjs'
 import User from '@/model/User'
+import { errorLog4js } from '@/common/log4js'
 class UserController {
   // 用户签到接口
   async sign(ctx) {
@@ -130,7 +131,7 @@ class UserController {
         responseFail(ctx, '您输入的原密码不正确，请重新输入！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -152,7 +153,7 @@ class UserController {
         responseSuccess(ctx, '新增用户成功！', result)
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -168,7 +169,7 @@ class UserController {
         responseSuccess(ctx, '删除用户成功！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -180,7 +181,7 @@ class UserController {
       const total = await User.countDocuments(body)
       responsePage(ctx, '获取文章分页数据成功', records, body.pageNum, body.pageSize, total)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -215,7 +216,7 @@ class UserController {
         }
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }

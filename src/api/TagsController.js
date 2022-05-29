@@ -1,5 +1,6 @@
 import Tags from '@/model/Tags'
 import { responseSuccess, responseFail, responsePage } from '@/common/utils'
+import { errorLog4js } from '@/common/log4js'
 class TagsController {
   // 获取标签分页数据
   async getTagList(ctx) {
@@ -9,7 +10,7 @@ class TagsController {
       const total = await Tags.countDocuments(body)
       responsePage(ctx, '获取标签分页数据成功', records, body.pageNum, body.pageSize, total)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -34,14 +35,14 @@ class TagsController {
         }
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
   // 删除标签
   async deleteTag(ctx) {
     try {
-      const { _id } = ctx.request.query
+      const { _id } = ctx.request.body
       const tagRecord = await Tags.findById(_id)
       if (tagRecord) {
         await Tags.deleteOne({ _id })
@@ -50,7 +51,7 @@ class TagsController {
         responseFail(ctx, '标签数据不存在，删除失败！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }

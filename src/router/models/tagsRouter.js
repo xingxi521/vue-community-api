@@ -7,5 +7,5 @@ router.post('/getTagList', TagsController.getTagList)
 // 新增编辑标签
 router.post('/addTag', TagsController.addTag)
 // 删除标签
-router.get('/deleteTag', TagsController.deleteTag)
+router.post('/deleteTag', TagsController.deleteTag)
 export default router

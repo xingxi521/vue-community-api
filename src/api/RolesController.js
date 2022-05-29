@@ -2,6 +2,7 @@ import Roles from '@/model/Roles'
 import Menus from '@/model/Menus'
 import User from '@/model/User'
 import { responseSuccess, responseFail, getMenuTree, getMenuRoter, getTokenInfo } from '@/common/utils'
+import { errorLog4js } from '@/common/log4js'
 class RolesController {
   // 获取角色权限数据
   async getRoles(ctx) {
@@ -9,7 +10,7 @@ class RolesController {
       const result = await Roles.find({})
       responseSuccess(ctx, '获取角色权限数据成功', result)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -26,7 +27,7 @@ class RolesController {
         responseSuccess(ctx, '新增角色成功！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -36,7 +37,7 @@ class RolesController {
       const result = await Roles.find({}, { menus: 0, desc: 0 })
       responseSuccess(ctx, '获取角色数据成功', result)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -61,7 +62,23 @@ class RolesController {
       const result = getMenuRoter(menuTree, userMenuRole, ctx.isAdmin)
       responseSuccess(ctx, '获取菜单路由表成功', result)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
+      responseFail(ctx, error.stack)
+    }
+  }
+  // 删除角色
+  async deleteRole(ctx) {
+    try {
+      const { _id } = ctx.request.body
+      const records = await Roles.findById(_id)
+      if (records) {
+        await Roles.deleteOne({ _id })
+        responseSuccess(ctx, '删除角色成功！')
+      } else {
+        responseFail(ctx, '该角色不存在，删除失败！')
+      }
+    } catch (error) {
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }

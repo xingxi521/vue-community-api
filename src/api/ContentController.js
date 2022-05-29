@@ -8,6 +8,7 @@ import mkdir from 'make-dir'
 import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
 import { checkTrim, responseFail, responsePage, responseSuccess, checkCaptcha, getTokenInfo } from '@/common/utils'
+import { errorLog4js } from '@/common/log4js'
 class ContentController {
   // 文章列表接口
   async getContentList(ctx) {
@@ -34,7 +35,7 @@ class ContentController {
       const total = await Post.countDocuments(params)
       responsePage(ctx, '获取文章分页数据成功', records, body.pageNum, body.pageSize, total)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -49,7 +50,7 @@ class ContentController {
       const data = await Link.getLinkList(type)
       responseSuccess(ctx, '', data)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -74,7 +75,7 @@ class ContentController {
         pic: `${destPath}/${saveFileName}`
       })
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -104,7 +105,7 @@ class ContentController {
         responseFail(ctx, '您输入的验证码不正确，请重新输入！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -135,7 +136,7 @@ class ContentController {
         }
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -161,7 +162,7 @@ class ContentController {
         responseFail(ctx, '您输入的验证码不正确，请重新输入！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -177,7 +178,7 @@ class ContentController {
         responseFail(ctx, '文章不存在！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -190,7 +191,7 @@ class ContentController {
       const total = await Post.countDocuments({ userInfo: tokenInfo.userId })
       responsePage(ctx, '获取用户发表帖子数据成功', result, pageNum, pageSize, total)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -201,7 +202,7 @@ class ContentController {
       const result = await Post.getListByUid(uid, 1, 20)
       responseSuccess(ctx, '获取用户发表帖子数据成功', result)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -221,7 +222,7 @@ class ContentController {
         responseFail(ctx, '文章不存在，删除失败！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -231,7 +232,7 @@ class ContentController {
       const result = await Post.getTopWeek()
       responseSuccess(ctx, '获取本周热议成功', result)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }

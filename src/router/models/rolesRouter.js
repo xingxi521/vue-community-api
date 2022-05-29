@@ -10,4 +10,6 @@ router.post('/addRole', RolesController.addRoles)
 router.get('/getRoleName', RolesController.getRolesName)
 // 获取菜单路由表
 router.get('/getMenuRouter', RolesController.getMenuRouter)
+// 删除角色
+router.post('/deleteRole', RolesController.deleteRole)
 export default router

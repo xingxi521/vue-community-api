@@ -6,6 +6,7 @@ import Users from '@/model/User'
 import { checkCaptcha, responseSuccess, responseFail } from '@/common/utils'
 import { v4 as uuidv4 } from 'uuid'
 import { setValue } from '@/config/RedisConfig'
+import { errorLog4js } from '@/common/log4js'
 class LoginController {
   // 忘记密码
   async forget(ctx) {
@@ -35,7 +36,7 @@ class LoginController {
         responseFail(ctx, '您输入的验证码不正确，请重新输入！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -66,7 +67,7 @@ class LoginController {
         responseFail(ctx, '验证码不正确，请重新输入！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -95,7 +96,7 @@ class LoginController {
         responseFail(ctx, '验证码不正确，请重新输入！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }

@@ -28,6 +28,7 @@
     "koa-helmet": "^6.1.0",
     "koa-json": "^2.0.2",
     "koa-jwt": "^4.0.3",
+    "koa-log4": "^2.3.2",
     "koa-router": "^10.1.1",
     "koa-static": "^5.0.0",
     "make-dir": "^3.1.0",

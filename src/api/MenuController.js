@@ -1,5 +1,6 @@
 import Menus from '@/model/Menus'
 import { responseSuccess, responseFail, getMenuTree, getTreeFiled } from '@/common/utils'
+import { errorLog4js } from '@/common/log4js'
 class MenuController {
   // 获取菜单
   async getMenu(ctx) {
@@ -9,7 +10,7 @@ class MenuController {
       const result = getMenuTree(menuToJson, null)
       responseSuccess(ctx, '获取菜单数据成功！', result)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.message)
     }
   }
@@ -21,7 +22,7 @@ class MenuController {
       menuRecords.save()
       responseSuccess(ctx, '新增成功！')
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.message)
     }
   }
@@ -37,7 +38,7 @@ class MenuController {
         responseFail(ctx, '菜单不存在，修改失败！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.message)
     }
   }
@@ -56,7 +57,7 @@ class MenuController {
       await Menus.deleteMany({ _id: { $in: resultArr }})
       responseSuccess(ctx, '删除菜单成功！')
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.message)
     }
   }

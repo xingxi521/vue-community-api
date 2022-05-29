@@ -6,6 +6,7 @@ import Post from '@/model/Post'
 import User from '@/model/User'
 import NiceRecords from '@/model/NiceRecords'
 import { responseFail, responseSuccess, getTokenInfo, responsePage, getObjByAttr } from '@/common/utils'
+import { errorLog4js } from '@/common/log4js'
 class CommentController {
   constructor() {
     this.getCommentList = this.getCommentList.bind(this)
@@ -52,7 +53,7 @@ class CommentController {
       }))
       responseSuccess(ctx, '添加评论成功', commentRecords)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -93,7 +94,7 @@ class CommentController {
       const total = await CommentRecords.countDocuments({ tid, cid: null })
       responsePage(ctx, '获取评论数据成功', result, pageNum, pageSize, total)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -128,7 +129,7 @@ class CommentController {
       }
       console.log(tokenInfo)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -150,7 +151,7 @@ class CommentController {
         responseSuccess(ctx, '点赞成功！', result)
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -166,7 +167,7 @@ class CommentController {
         responseFail(ctx, '评论不存在！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -182,7 +183,7 @@ class CommentController {
         responseFail(ctx, '评论不存在！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -193,7 +194,7 @@ class CommentController {
       const result = await CommentRecords.getCommentByUid(uid, 1, 20)
       responseSuccess(ctx, '获取用户最近评论数据成功', result)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -206,7 +207,7 @@ class CommentController {
       const total = await CommentRecords.countDocuments({ cuid: tokenInfo.userId, isRead: false })
       responsePage(ctx, '获取未读消息成功', result, pageNum, pageSize, total)
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -222,7 +223,7 @@ class CommentController {
         responseFail(ctx, '评论不存在！')
       }
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }
@@ -233,7 +234,7 @@ class CommentController {
       await CommentRecords.updateMany({ cuid: tokenInfo.userId }, { isRead: true })
       responseSuccess(ctx, '清空所有未读消息成功！')
     } catch (error) {
-      console.log(error)
+      errorLog4js(error.stack, ctx)
       responseFail(ctx, error.stack)
     }
   }

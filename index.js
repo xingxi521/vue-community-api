@@ -17,6 +17,7 @@ import config from './src/config/index'
 import WebSocket from '@/config/WebSocket'
 import authMiddleWare from '@/common/authMiddleWare'
 import { initAdmin } from '@/common/initAdmin'
+import { httpLogger, appLogger } from '@/common/log4js'
 const isDev = process.env.NODE_ENV !== 'production'
 if (!isDev) { // 压缩中间件
   app.use(compress())
@@ -37,7 +38,10 @@ const middleWare = compose([
   statics(path.join(__dirname, '../public')),
   errorHandler,
   koaJwt,
-  authMiddleWare
+  authMiddleWare,
+  isDev
+    ? httpLogger()
+    : appLogger()
 ])
 app.use(middleWare)
   .use(router())
