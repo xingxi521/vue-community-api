@@ -19,5 +19,5 @@ export default {
   // 前端公共接口，不需要token的
   PUBLIC_PATH: [/^\/public/, /^\/login/],
   // 后台数据权限白名单
-  AUTH_WHILE_lIST: [/^\/public/, /^\/login/, /^\/collect/, /^\/comment/, /^\/content/, /^\/user/, /^\/role\/getMenuRouter/, /^\/role\/getRoleName/, /^\/home\/getStatistics/]
+  AUTH_WHILE_lIST: [/^\/public/, /^\/login/, /^\/admin\/postDetails+/, /^\/admin\/getUserInfo/, /^\/role\/getMenuRouter/, /^\/role\/getRoleName/, /^\/home\/getStatistics/]
 }
